@@ -1,0 +1,59 @@
+import java.util.*;
+
+public class SalesBonusCalculator {
+    public static void main(String[] args) {
+        // Example organization with sales handling in millions of INR
+        Map<String, Integer> organization = new HashMap<>();
+        organization.put("SE1", 55);
+        organization.put("SE2", 56);
+        organization.put("SE3", 40);
+        organization.put("SE4", 30);
+        organization.put("SE5", 66);
+        organization.put("SE6", 45);
+        organization.put("SE7", 35);
+        organization.put("SE8", 25);
+        organization.put("SE9", 40);
+        organization.put("SE10", 20);
+        organization.put("SE11", 15);
+        organization.put("SE12", 10);
+        organization.put("SE13", 5);
+        organization.put("SE14", 3);
+        organization.put("SE15", 2);
+        organization.put("SE16", 29);
+        organization.put("SE17", 54);
+
+        // Calculate the total sales of the organization
+        int totalSales = organization.values().stream().mapToInt(Integer::intValue).sum();
+
+        // Sort the sales executives based on their sales handling in descending order
+        List<Map.Entry<String, Integer>> sortedExecutives = new ArrayList<>(organization.entrySet());
+        sortedExecutives.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+
+        // Determine the line with the highest sales
+        int lineSales = 0;
+        List<String> line = new ArrayList<>();
+        for (Map.Entry<String, Integer> executive : sortedExecutives) {
+            if (lineSales >= totalSales / 2) {
+                break;
+            }
+            line.add(executive.getKey());
+            lineSales += executive.getValue();
+        }
+
+        // Calculate the bonus distribution for each sales executive in the line
+        List<Map.Entry<String, Integer>> bonusDistribution = new ArrayList<>();
+        for (String executive : line) {
+            int salesHandling = organization.get(executive);
+            int bonusPercentage = (int) Math.round((double) salesHandling / lineSales * 100);
+            int bonus = bonusPercentage * 1000000;  // Assuming bonus is in millions of INR
+            bonusDistribution.add(new AbstractMap.SimpleEntry<>(executive, bonus));
+        }
+
+        // Print the line with the highest sales and bonus distribution
+        System.out.println("Organization Line with Highest Sales:");
+        System.out.println("Employee ID\tBonus");
+        for (Map.Entry<String, Integer> executive : bonusDistribution) {
+            System.out.println(executive.getKey() + "\t\t" + executive.getValue());
+        }
+    }
+}
